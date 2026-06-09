@@ -2,6 +2,8 @@
 
 A responsive chat interface built with Next.js, React, TypeScript, Tailwind CSS, and Zod for the Doodle Frontend Engineer challenge.
 
+![Doodle Chat screenshot](public/screenshot.png)
+
 The app displays messages from all senders, supports sending new messages, loads older messages through pagination, and proxies API requests through a server-side Next.js route so the backend Bearer token is not exposed to the browser.
 
 For the backend implementation details and setup instructions, please refer to the [Frontend Challenge Chat API repository](https://github.com/DoodleScheduling/frontend-challenge-chat-api).
