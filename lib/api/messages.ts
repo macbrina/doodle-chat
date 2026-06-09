@@ -11,7 +11,7 @@ export async function fetchMessages(
   if (options.after) searchParams.set("after", options.after);
 
   const queryString = searchParams.toString();
-  const url = `/api/messages?${queryString ? `?${queryString}` : ""}`;
+  const url = `/api/messages${queryString ? `?${queryString}` : ""}`;
 
   const response = await fetch(url, {
     cache: "no-store",

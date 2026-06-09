@@ -1,22 +1,65 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f5f6f8;
+  --foreground: #374151;
+
+  --surface: #ffffff;
+  --surface-foreground: #4b5563;
+
+  --border: #d1d5db;
+
+  --incoming-message: #ffffff;
+  --outgoing-message: #f5efb9;
+
+  --composer-bg: #3b9ad9;
+  --composer-input: #ffffff;
+  --composer-button: #ff8b73;
+
+  --muted-foreground: #9ca3af;
+}
+
+.dark {
+  --background: #111827;
+  --foreground: #f3f4f6;
+
+  --surface: #1f2937;
+  --surface-foreground: #f3f4f6;
+
+  --border: #374151;
+
+  --incoming-message: #1f2937;
+  --outgoing-message: #4b5563;
+
+  --composer-bg: #1e40af;
+  --composer-input: #111827;
+  --composer-button: #fb7185;
+
+  --muted-foreground: #9ca3af;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+
+  --color-surface: var(--surface);
+  --color-surface-foreground: var(--surface-foreground);
+
+  --color-border: var(--border);
+
+  --color-incoming-message: var(--incoming-message);
+  --color-outgoing-message: var(--outgoing-message);
+
+  --color-composer-bg: var(--composer-bg);
+  --color-composer-input: var(--composer-input);
+  --color-composer-button: var(--composer-button);
+
+  --color-muted: var(--muted);
+
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
 }
 
 body {

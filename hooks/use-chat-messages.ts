@@ -10,33 +10,37 @@ import {
   Message,
   CreateMessageRequest,
 } from "@/types/messages";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
 export function useChatMessages() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoadingMessages, setIsLoadingMessages] = useState(true);
   const [isSendingMessage, setIsSendingMessage] = useState(false);
   const [isLoadingOlderMessages, setIsLoadingOlderMessages] = useState(false);
+  const [hasMoreMessages, setHasMoreMessages] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const loadMessages = async (
-    options: FetchMessagesQuery = { limit: CHAT_RULES.message.defaultLimit },
-  ) => {
-    try {
-      setIsLoadingMessages(true);
-      setError(null);
+  const loadMessages = useCallback(
+    async (
+      options: FetchMessagesQuery = { limit: CHAT_RULES.message.defaultLimit },
+    ) => {
+      try {
+        setIsLoadingMessages(true);
+        setError(null);
 
-      const messages = await fetchMessages(options);
+        const messages = await fetchMessages(options);
 
-      setMessages(messages.reverse());
-    } catch (error) {
-      const errorMessage =
-        error instanceof Error ? error.message : "Failed to load messages";
-      setError(errorMessage);
-    } finally {
-      setIsLoadingMessages(false);
-    }
-  };
+        setMessages(messages);
+      } catch (error) {
+        const errorMessage =
+          error instanceof Error ? error.message : "Failed to load messages";
+        setError(errorMessage);
+      } finally {
+        setIsLoadingMessages(false);
+      }
+    },
+    [],
+  );
 
   const sendMessage = async (content: CreateMessageRequest) => {
     try {
@@ -55,10 +59,10 @@ export function useChatMessages() {
     }
   };
 
-  const loadOlderMessages = async () => {
+  const loadOlderMessages = useCallback(async () => {
     const oldestMessage = messages[0];
 
-    if (!oldestMessage || isLoadingOlderMessages) return;
+    if (!oldestMessage || isLoadingOlderMessages || !hasMoreMessages) return;
 
     try {
       setIsLoadingOlderMessages(true);
@@ -69,26 +73,38 @@ export function useChatMessages() {
         before: oldestMessage.createdAt,
       });
 
-      setMessages((prevMessages) => [
-        ...olderMessages.reverse(),
-        ...prevMessages,
-      ]);
+      setMessages((prevMessages) => {
+        const existingIds = new Set(prevMessages.map((message) => message._id));
+
+        const uniqueOlderMessages = olderMessages.filter(
+          (message) => !existingIds.has(message._id),
+        );
+
+        if (uniqueOlderMessages.length === 0) {
+          setHasMoreMessages(false);
+          return prevMessages;
+        }
+
+        return [...uniqueOlderMessages, ...prevMessages];
+      });
     } catch (error) {
       const errorMessage =
         error instanceof Error
           ? error.message
           : "Failed to load older messages";
+
       setError(errorMessage);
     } finally {
       setIsLoadingOlderMessages(false);
     }
-  };
+  }, [messages, isLoadingOlderMessages, hasMoreMessages]);
 
   return {
     messages,
     isLoadingMessages,
     isSendingMessage,
     isLoadingOlderMessages,
+    hasMoreMessages,
     error,
     loadMessages,
     sendMessage,
