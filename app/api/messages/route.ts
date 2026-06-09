@@ -31,7 +31,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
-    const { body } = await request.json();
+    const body = await request.json();
     const payload = createMessageSchema.parse(body);
 
     const result = await createMessage(payload);

@@ -16,7 +16,9 @@ function ChatShell() {
     isSendingMessage,
     isLoadingOlderMessages,
     hasMoreMessages,
-    error,
+    loadError,
+    loadOlderError,
+    sendError,
     loadMessages,
     loadOlderMessages,
     sendMessage,
@@ -41,14 +43,15 @@ function ChatShell() {
       >
         {isLoadingMessages ? (
           <ChatLoading />
-        ) : error ? (
-          <ChatError message={error} onRetry={loadMessages} />
+        ) : loadError ? (
+          <ChatError message={loadError} onRetry={loadMessages} />
         ) : (
           <MessageList
             messages={messages}
             hasMoreMessages={hasMoreMessages}
             isLoadingOlderMessages={isLoadingOlderMessages}
             onLoadOlderMessages={loadOlderMessages}
+            loadOlderError={loadOlderError}
           />
         )}
       </section>
@@ -56,6 +59,7 @@ function ChatShell() {
       <MessageComposer
         isSending={isSendingMessage}
         onSendMessage={sendMessage}
+        sendError={sendError}
       />
     </main>
   );

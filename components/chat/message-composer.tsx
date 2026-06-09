@@ -3,16 +3,15 @@
 import { FormEvent, useState } from "react";
 
 import { CHAT_RULES } from "@/lib/utils/validation";
-import type { CreateMessageRequest } from "@/types/messages";
-
-interface MessageComposerProps {
-  isSending: boolean;
-  onSendMessage: (payload: CreateMessageRequest) => Promise<void>;
-}
+import type { MessageComposerProps } from "@/types/messages";
 
 const AUTHOR_NAME = "You";
 
-function MessageComposer({ isSending, onSendMessage }: MessageComposerProps) {
+function MessageComposer({
+  isSending,
+  sendError,
+  onSendMessage,
+}: MessageComposerProps) {
   const [message, setMessage] = useState("");
 
   const trimmedMessage = message.trim();
@@ -26,12 +25,14 @@ function MessageComposer({ isSending, onSendMessage }: MessageComposerProps) {
 
     if (!canSend) return;
 
-    await onSendMessage({
+    const wasSent = await onSendMessage({
       author: AUTHOR_NAME,
       message: trimmedMessage,
     });
 
-    setMessage("");
+    if (wasSent) {
+      setMessage("");
+    }
   };
 
   return (
@@ -61,13 +62,19 @@ function MessageComposer({ isSending, onSendMessage }: MessageComposerProps) {
           disabled={!canSend}
           className="min-h-14 rounded-md bg-composer-button px-8 text-lg font-semibold text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
         >
-          {isSending ? "Sending..." : "Send"}
+          {isSending ? "Sending..." : sendError ? "Retry" : "Send"}
         </button>
       </form>
 
       {isMessageTooLong ? (
         <p className="mx-auto mt-2 w-full max-w-190 text-sm text-white">
           Message cannot exceed {CHAT_RULES.message.maxLength} characters.
+        </p>
+      ) : null}
+
+      {sendError ? (
+        <p className="mx-auto mt-2 w-full max-w-190 text-sm font-medium text-white">
+          {sendError}. Your message was not sent. Edit it or press Retry.
         </p>
       ) : null}
     </footer>

@@ -18,7 +18,9 @@ export function useChatMessages() {
   const [isSendingMessage, setIsSendingMessage] = useState(false);
   const [isLoadingOlderMessages, setIsLoadingOlderMessages] = useState(false);
   const [hasMoreMessages, setHasMoreMessages] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [sendError, setSendError] = useState<string | null>(null);
+  const [loadOlderError, setLoadOlderError] = useState<string | null>(null);
 
   const loadMessages = useCallback(
     async (
@@ -26,7 +28,7 @@ export function useChatMessages() {
     ) => {
       try {
         setIsLoadingMessages(true);
-        setError(null);
+        setLoadError(null);
 
         const messages = await fetchMessages(options);
 
@@ -34,7 +36,7 @@ export function useChatMessages() {
       } catch (error) {
         const errorMessage =
           error instanceof Error ? error.message : "Failed to load messages";
-        setError(errorMessage);
+        setLoadError(errorMessage);
       } finally {
         setIsLoadingMessages(false);
       }
@@ -42,22 +44,30 @@ export function useChatMessages() {
     [],
   );
 
-  const sendMessage = async (content: CreateMessageRequest) => {
-    try {
-      setIsSendingMessage(true);
-      setError(null);
+  const sendMessage = useCallback(
+    async (content: CreateMessageRequest): Promise<boolean> => {
+      try {
+        setIsSendingMessage(true);
+        setSendError(null);
 
-      const newMessage = await sendMessageRequest(content);
+        const newMessage = await sendMessageRequest(content);
 
-      setMessages((prevMessages) => [...prevMessages, newMessage]);
-    } catch (error) {
-      const errorMessage =
-        error instanceof Error ? error.message : "Failed to send message";
-      setError(errorMessage);
-    } finally {
-      setIsSendingMessage(false);
-    }
-  };
+        setMessages((prevMessages) => [...prevMessages, newMessage]);
+
+        return true;
+      } catch (error) {
+        const errorMessage =
+          error instanceof Error ? error.message : "Failed to send message";
+
+        setSendError(errorMessage);
+
+        return false;
+      } finally {
+        setIsSendingMessage(false);
+      }
+    },
+    [],
+  );
 
   const loadOlderMessages = useCallback(async () => {
     const oldestMessage = messages[0];
@@ -66,7 +76,7 @@ export function useChatMessages() {
 
     try {
       setIsLoadingOlderMessages(true);
-      setError(null);
+      setLoadOlderError(null);
 
       const olderMessages = await fetchMessages({
         limit: CHAT_RULES.message.defaultLimit,
@@ -93,7 +103,7 @@ export function useChatMessages() {
           ? error.message
           : "Failed to load older messages";
 
-      setError(errorMessage);
+      setLoadOlderError(errorMessage);
     } finally {
       setIsLoadingOlderMessages(false);
     }
@@ -105,7 +115,9 @@ export function useChatMessages() {
     isSendingMessage,
     isLoadingOlderMessages,
     hasMoreMessages,
-    error,
+    loadError,
+    sendError,
+    loadOlderError,
     loadMessages,
     sendMessage,
     loadOlderMessages,

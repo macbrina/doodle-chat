@@ -1,15 +1,14 @@
-interface ChatErrorProps {
-  message: string;
-  onRetry?: () => void;
-}
+import { ChatErrorProps } from "@/types/messages";
 
-function ChatError({ message, onRetry }: ChatErrorProps) {
+function ChatError({
+  title = "Something went wrong",
+  message,
+  onRetry,
+}: ChatErrorProps) {
   return (
     <div className="flex h-full items-center justify-center px-4 text-center">
       <div className="max-w-sm rounded-md border border-border bg-surface/90 p-6 shadow-sm">
-        <h2 className="text-lg font-semibold text-foreground">
-          Couldn’t load messages
-        </h2>
+        <h2 className="text-lg font-semibold text-foreground">{title}</h2>
         <p className="mt-2 text-sm text-muted-foreground">{message}</p>
 
         {onRetry ? (
