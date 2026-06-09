@@ -6,7 +6,7 @@ import ChatLoading from "@/components/chat/chat-loading";
 import MessageComposer from "@/components/chat/message-composer";
 import MessageList from "@/components/chat/message-list";
 import { useChatMessages } from "@/hooks/use-chat-messages";
-import { CreateMessageRequest } from "@/types/messages";
+import type { CreateMessageRequest } from "@/types/messages";
 import { useCallback, useEffect, useRef } from "react";
 
 function ChatShell() {

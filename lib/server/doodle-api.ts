@@ -1,7 +1,7 @@
 import "server-only";
 
 import { createMessageSchema } from "@/lib/schemas/message";
-import { type CreateMessageRequest, type Message } from "@/types/messages";
+import type { CreateMessageRequest, Message } from "@/types/messages";
 import { ApiResult } from "@/types/api";
 import { apiErrorSchema, internalServerErrorSchema } from "@/lib/schemas/api";
 

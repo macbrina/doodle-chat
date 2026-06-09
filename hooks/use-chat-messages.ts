@@ -1,16 +1,17 @@
 "use client";
 
+import { useCallback, useState } from "react";
 import {
   fetchMessages,
   sendMessage as sendMessageRequest,
 } from "@/lib/api/messages";
 import { CHAT_RULES } from "@/lib/utils/validation";
-import {
+import type {
   FetchMessagesQuery,
   Message,
   CreateMessageRequest,
 } from "@/types/messages";
-import { useCallback, useState } from "react";
+import { getErrorMessage } from "@/lib/utils/helper";
 
 export function useChatMessages() {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -34,8 +35,7 @@ export function useChatMessages() {
 
         setMessages(messages);
       } catch (error) {
-        const errorMessage =
-          error instanceof Error ? error.message : "Failed to load messages";
+        const errorMessage = getErrorMessage(error, "Failed to load messages");
         setLoadError(errorMessage);
       } finally {
         setIsLoadingMessages(false);
@@ -56,8 +56,7 @@ export function useChatMessages() {
 
         return true;
       } catch (error) {
-        const errorMessage =
-          error instanceof Error ? error.message : "Failed to send message";
+        const errorMessage = getErrorMessage(error, "Failed to load messages");
 
         setSendError(errorMessage);
 
@@ -98,10 +97,7 @@ export function useChatMessages() {
         return [...uniqueOlderMessages, ...prevMessages];
       });
     } catch (error) {
-      const errorMessage =
-        error instanceof Error
-          ? error.message
-          : "Failed to load older messages";
+      const errorMessage = getErrorMessage(error, "Failed to load messages");
 
       setLoadOlderError(errorMessage);
     } finally {

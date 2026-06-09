@@ -1,4 +1,4 @@
-import { ChatErrorProps } from "@/types/messages";
+import type { ChatErrorProps } from "@/types/messages";
 
 function ChatError({
   title = "Something went wrong",

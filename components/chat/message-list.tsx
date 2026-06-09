@@ -32,14 +32,6 @@ function MessageList({
         ) : null}
       </div>
 
-      {/* {!hasMoreMessages ? (
-        <div className="sticky top-0 z-10">
-          <p className="text-center text-sm text-muted-foreground">
-            No more messages to load
-          </p>
-        </div>
-      ) : null} */}
-
       {messages.map((message) => (
         <MessageBubble
           key={message._id}

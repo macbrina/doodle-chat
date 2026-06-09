@@ -1,5 +1,8 @@
-import { CreateMessageRequest, Message } from "@/types/messages";
-import { FetchMessagesQuery } from "@/types/messages";
+import type {
+  CreateMessageRequest,
+  Message,
+  FetchMessagesQuery,
+} from "@/types/messages";
 
 export async function fetchMessages(
   options: FetchMessagesQuery = {},
