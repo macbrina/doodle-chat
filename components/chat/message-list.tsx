@@ -15,22 +15,30 @@ function MessageList({
   }
 
   return (
-    <div className="mx-auto flex min-h-full w-full max-w-180 flex-col gap-4 px-4 py-6 lg:max-w-190">
-      {loadOlderError ? (
-        <div className="rounded-md border border-border bg-surface/90 px-4 py-3 text-center text-sm text-muted-foreground">
-          {loadOlderError}
+    <div className="relative mx-auto flex w-full max-w-180 flex-col gap-4 px-4 py-6 lg:max-w-190">
+      <div className="absolute top-1 left-1/2 -translate-x-1/2">
+        {loadOlderError ? (
+          <div className="rounded-md border border-border bg-surface/90 px-4 py-3 text-center text-sm text-muted-foreground">
+            {loadOlderError}
+          </div>
+        ) : isLoadingOlderMessages ? (
+          <p className="text-sm text-muted-foreground">
+            Loading older messages...
+          </p>
+        ) : !hasMoreMessages ? (
+          <p className="text-sm text-muted-foreground">
+            No more messages to load
+          </p>
+        ) : null}
+      </div>
+
+      {/* {!hasMoreMessages ? (
+        <div className="sticky top-0 z-10">
+          <p className="text-center text-sm text-muted-foreground">
+            No more messages to load
+          </p>
         </div>
-      ) : null}
-      {isLoadingOlderMessages ? (
-        <p className="text-center text-sm text-muted-foreground">
-          Loading older messages...
-        </p>
-      ) : null}
-      {!hasMoreMessages ? (
-        <p className="text-center text-sm text-muted-foreground">
-          No more messages to load
-        </p>
-      ) : null}
+      ) : null} */}
 
       {messages.map((message) => (
         <MessageBubble
@@ -42,4 +50,5 @@ function MessageList({
     </div>
   );
 }
+
 export default MessageList;

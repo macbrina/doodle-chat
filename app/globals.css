@@ -22,7 +22,7 @@
 }
 
 .dark {
-  --background: #111827;
+  --background: #000000;
   --foreground: #f3f4f6;
 
   --surface: #1f2937;
@@ -34,7 +34,7 @@
   --outgoing-message: #4b5563;
 
   --composer-bg: #1e40af;
-  --composer-input: #111827;
+  --composer-input: #000000;
   --composer-button: #fb7185;
 
   --muted-foreground: #9ca3af;
