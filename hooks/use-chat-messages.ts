@@ -56,7 +56,7 @@ export function useChatMessages() {
 
         return true;
       } catch (error) {
-        const errorMessage = getErrorMessage(error, "Failed to load messages");
+        const errorMessage = getErrorMessage(error, "Failed to send messages");
 
         setSendError(errorMessage);
 
@@ -97,7 +97,10 @@ export function useChatMessages() {
         return [...uniqueOlderMessages, ...prevMessages];
       });
     } catch (error) {
-      const errorMessage = getErrorMessage(error, "Failed to load messages");
+      const errorMessage = getErrorMessage(
+        error,
+        "Failed to load older messages",
+      );
 
       setLoadOlderError(errorMessage);
     } finally {
