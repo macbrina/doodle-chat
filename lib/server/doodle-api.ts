@@ -1,11 +1,9 @@
 import "server-only";
 
-import {
-  createMessageSchema,
-  type CreateMessageRequest,
-  type Message,
-} from "@/lib/schemas/message";
+import { createMessageSchema } from "@/lib/schemas/message";
+import { type CreateMessageRequest, type Message } from "@/types/messages";
 import { ApiResult } from "@/types/api";
+import { apiErrorSchema, internalServerErrorSchema } from "@/lib/schemas/api";
 
 const DOODLE_API_BASE_URL = process.env.DOODLE_API_BASE_URL;
 const DOODLE_API_TOKEN = process.env.DOODLE_API_TOKEN;
@@ -15,6 +13,24 @@ function getApiConfig() {
     throw new Error("Doodle API configuration is missing");
   }
   return { baseUrl: DOODLE_API_BASE_URL, token: DOODLE_API_TOKEN };
+}
+
+function parseApiError(data: unknown) {
+  const apiError = apiErrorSchema.safeParse(data);
+
+  if (apiError.success) {
+    return apiError.data;
+  }
+
+  const internalError = internalServerErrorSchema.safeParse(data);
+
+  if (internalError.success) {
+    return internalError.data;
+  }
+
+  return {
+    error: "Unexpected API error",
+  };
 }
 
 export async function getMessages(
@@ -38,7 +54,7 @@ export async function getMessages(
     return {
       success: false,
       status: response.status,
-      error: data,
+      error: parseApiError(data),
     };
   }
 
@@ -71,7 +87,7 @@ export async function createMessage(
     return {
       success: false,
       status: response.status,
-      error: data,
+      error: parseApiError(data),
     };
   }
 

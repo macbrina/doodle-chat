@@ -1,3 +1,10 @@
+import { z } from "zod";
+
+import { apiErrorSchema, internalServerErrorSchema } from "@/lib/schemas/api";
+
+export type ApiError = z.infer<typeof apiErrorSchema>;
+export type InternalServerError = z.infer<typeof internalServerErrorSchema>;
+
 export type ApiResult<T> =
   | {
       success: true;
@@ -6,25 +13,5 @@ export type ApiResult<T> =
   | {
       success: false;
       status: number;
-      error: ErrorResponse;
+      error: ApiError | InternalServerError;
     };
-
-interface ErrorResponseDetail {
-  msg: string;
-  param: string;
-  location: string;
-}
-
-export interface ErrorResponse {
-  error: string;
-  details: ErrorResponseDetail[];
-}
-
-interface InternalError {
-  message: string;
-  createdAt: string;
-}
-
-export interface InternalServerError {
-  error: InternalError;
-}
